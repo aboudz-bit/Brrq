@@ -53,9 +53,10 @@ class OverlayService : Service() {
         }
         val dp = resources.displayMetrics.density
         val bubbleSize = (56 * dp).toInt()
+        val screenWidth = resources.displayMetrics.widthPixels
         val params = makeParams(bubbleSize, bubbleSize).apply {
-            gravity = Gravity.TOP or Gravity.END
-            x = (16 * dp).toInt(); y = (280 * dp).toInt()
+            gravity = Gravity.TOP or Gravity.START
+            x = screenWidth - bubbleSize - (16 * dp).toInt(); y = (280 * dp).toInt()
         }
         var dX = 0f; var dY = 0f; var moved = false
         bubble.setOnTouchListener { v, e ->

@@ -20,8 +20,8 @@ import java.net.URL
 class HallalAccessibilityService : AccessibilityService() {
 
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
-    private var lastHash = ""
-    private var busy = false
+    @Volatile private var lastHash = ""
+    @Volatile private var busy = false
     private val mainHandler = Handler(Looper.getMainLooper())
 
     companion object { var instance: HallalAccessibilityService? = null }
