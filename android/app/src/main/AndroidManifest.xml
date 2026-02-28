@@ -2,35 +2,33 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.hallal.solver">
 
-    <!-- Permissions needed -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
-        android:label="⚡ حلّال"
+        android:label="حلّال"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         android:usesCleartextTraffic="true">
 
-        <!-- Main Activity -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <!-- Accessibility Service — reads screen content -->
         <service
             android:name=".HallalAccessibilityService"
             android:exported="true"
-            android:label="⚡ حلّال - قراءة الشاشة"
+            android:label="حلّال - قراءة الشاشة"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
             <intent-filter>
                 <action android:name="android.accessibilityservice.AccessibilityService" />
@@ -40,11 +38,9 @@
                 android:resource="@xml/accessibility_service_config" />
         </service>
 
-        <!-- Overlay Service — floating answer window -->
         <service
             android:name=".OverlayService"
-            android:exported="false"
-            android:foregroundServiceType="specialUse" />
+            android:exported="false" />
 
     </application>
 </manifest>
