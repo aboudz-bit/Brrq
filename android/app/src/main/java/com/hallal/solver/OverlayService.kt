@@ -51,8 +51,11 @@ class OverlayService : Service() {
                 setColor(Color.parseColor("#CC00e5ff"))
             }
         }
-        val params = makeParams(110, 110).apply {
-            gravity = Gravity.TOP or Gravity.END; x = 20; y = 300
+        val dp = resources.displayMetrics.density
+        val bubbleSize = (56 * dp).toInt()
+        val params = makeParams(bubbleSize, bubbleSize).apply {
+            gravity = Gravity.TOP or Gravity.END
+            x = (16 * dp).toInt(); y = (280 * dp).toInt()
         }
         var dX = 0f; var dY = 0f; var moved = false
         bubble.setOnTouchListener { v, e ->
@@ -82,35 +85,36 @@ class OverlayService : Service() {
         mainHandler.post {
             dismissAnswer()
             val ctx = this
+            val dp = resources.displayMetrics.density
 
             val card = LinearLayout(ctx).apply {
                 orientation = LinearLayout.VERTICAL
                 layoutDirection = View.LAYOUT_DIRECTION_RTL
                 background = GradientDrawable().apply {
                     shape = GradientDrawable.RECTANGLE
-                    cornerRadius = 40f
+                    cornerRadius = (24 * dp)
                     setColor(Color.parseColor("#F2060a14"))
                     setStroke(4, Color.parseColor("#00e5ff"))
                 }
-                setPadding(36, 28, 36, 22)
+                setPadding((36 * dp).toInt(), (28 * dp).toInt(), (36 * dp).toInt(), (22 * dp).toInt())
             }
 
             // Hero row: letter + answer text
             val hero = LinearLayout(ctx).apply {
                 orientation = LinearLayout.HORIZONTAL
                 gravity = Gravity.CENTER_VERTICAL
-                setPadding(0, 0, 0, 16)
+                setPadding(0, 0, 0, (16 * dp).toInt())
             }
             val ltrBox = TextView(ctx).apply {
                 this.text = letter; textSize = 38f
                 setTextColor(Color.BLACK); typeface = Typeface.DEFAULT_BOLD; gravity = Gravity.CENTER
                 background = GradientDrawable().apply {
-                    shape = GradientDrawable.RECTANGLE; cornerRadius = 18f
+                    shape = GradientDrawable.RECTANGLE; cornerRadius = (18 * dp)
                     colors = intArrayOf(Color.parseColor("#00e5ff"), Color.parseColor("#0055ff"))
                     orientation = GradientDrawable.Orientation.TL_BR
                     gradientType = GradientDrawable.LINEAR_GRADIENT
                 }
-                layoutParams = LinearLayout.LayoutParams(110, 110).apply { marginEnd = 18 }
+                layoutParams = LinearLayout.LayoutParams((80 * dp).toInt(), (80 * dp).toInt()).apply { marginEnd = (14 * dp).toInt() }
             }
             val info = LinearLayout(ctx).apply {
                 orientation = LinearLayout.VERTICAL
@@ -128,7 +132,7 @@ class OverlayService : Service() {
             // Explain
             val explainView = TextView(ctx).apply {
                 this.text = explain; textSize = 12f
-                setTextColor(Color.parseColor("#5a7099")); setPadding(0, 0, 10, 14)
+                setTextColor(Color.parseColor("#5a7099")); setPadding(0, 0, (10 * dp).toInt(), (14 * dp).toInt())
             }
 
             // Confidence bar
@@ -139,18 +143,20 @@ class OverlayService : Service() {
                 })
                 val conf = confidence.coerceIn(0, 100)
                 val track = FrameLayout(ctx).apply {
-                    layoutParams = LinearLayout.LayoutParams(0, 14, 1f).apply { marginEnd = 10 }
-                    background = GradientDrawable().apply { shape = GradientDrawable.RECTANGLE; cornerRadius = 7f; setColor(Color.parseColor("#161d35")) }
+                    layoutParams = LinearLayout.LayoutParams(0, (14 * dp).toInt(), 1f).apply { marginEnd = (10 * dp).toInt() }
+                    background = GradientDrawable().apply { shape = GradientDrawable.RECTANGLE; cornerRadius = (7 * dp); setColor(Color.parseColor("#161d35")) }
                     addView(View(ctx).apply {
                         background = GradientDrawable().apply {
-                            shape = GradientDrawable.RECTANGLE; cornerRadius = 7f
+                            shape = GradientDrawable.RECTANGLE; cornerRadius = (7 * dp)
                             colors = intArrayOf(Color.parseColor("#00e5ff"), Color.parseColor("#00ff88"))
                             orientation = GradientDrawable.Orientation.LEFT_RIGHT
                         }
                         layoutParams = FrameLayout.LayoutParams(
-                            (resources.displayMetrics.widthPixels * 0.5f * conf / 100).toInt(),
+                            FrameLayout.LayoutParams.MATCH_PARENT,
                             FrameLayout.LayoutParams.MATCH_PARENT
                         )
+                        pivotX = 0f
+                        scaleX = conf / 100f
                     })
                 }
                 addView(track)

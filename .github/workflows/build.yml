@@ -22,15 +22,19 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Make gradlew executable
-        run: chmod +x gradlew
+      - name: Install Gradle 8.5
+        run: |
+          wget -q https://services.gradle.org/distributions/gradle-8.5-bin.zip -O /tmp/gradle.zip
+          unzip -q /tmp/gradle.zip -d /opt
+          echo "/opt/gradle-8.5/bin" >> $GITHUB_PATH
 
       - name: Build Debug APK
-        run: ./gradlew assembleDebug
+        working-directory: android
+        run: gradle assembleDebug -Dorg.gradle.daemon=false --stacktrace
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: hallal-apk
-          path: app/build/outputs/apk/debug/app-debug.apk
-          retention-days: 7
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          retention-days: 30

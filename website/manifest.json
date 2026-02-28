@@ -2,7 +2,7 @@
   "name": "حلّال ذكي",
   "short_name": "حلّال",
   "description": "حل أسئلة MCQ تلقائياً بالذكاء الاصطناعي",
-  "start_url": "/",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#04050a",
   "theme_color": "#000000",
