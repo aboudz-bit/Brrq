@@ -30,13 +30,7 @@ jobs:
 
       - name: Build APK
         working-directory: android
-        run: |
-          gradle assembleDebug \
-            -Dorg.gradle.daemon=false \
-            --stacktrace
-
-      - name: List APK
-        run: find android -name "*.apk" -type f
+        run: gradle assembleDebug -Dorg.gradle.daemon=false --stacktrace
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
