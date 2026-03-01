@@ -28,13 +28,36 @@ jobs:
           unzip -q /tmp/gradle.zip -d /opt
           echo "/opt/gradle-8.5/bin" >> $GITHUB_PATH
 
-      - name: Build APK
+      - name: Build Debug APK
         working-directory: android
         run: gradle assembleDebug -Dorg.gradle.daemon=false
 
-      - name: Upload APK
+      - name: Upload Debug APK
         uses: actions/upload-artifact@v4
         with:
-          name: hallal-apk
+          name: hallal-debug-apk
           path: android/app/build/outputs/apk/debug/app-debug.apk
+          retention-days: 30
+
+      # Release APK — only when KEYSTORE_BASE64 secret is set
+      - name: Decode Keystore
+        if: ${{ secrets.KEYSTORE_BASE64 != '' }}
+        run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > keystore.jks
+
+      - name: Build Release APK
+        if: ${{ secrets.KEYSTORE_BASE64 != '' }}
+        working-directory: android
+        env:
+          KEYSTORE_PATH: "${{ github.workspace }}/keystore.jks"
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: gradle assembleRelease -Dorg.gradle.daemon=false --stacktrace
+
+      - name: Upload Release APK
+        if: ${{ secrets.KEYSTORE_BASE64 != '' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: hallal-release-apk
+          path: android/app/build/outputs/apk/release/app-release.apk
           retention-days: 30

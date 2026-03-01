@@ -15,13 +15,29 @@ android {
         versionName "1.0"
     }
 
+    signingConfigs {
+        release {
+            def ksPath = System.getenv("KEYSTORE_PATH")
+            if (ksPath) {
+                storeFile     file(ksPath)
+                storePassword System.getenv("KEYSTORE_PASSWORD")
+                keyAlias      System.getenv("KEY_ALIAS")
+                keyPassword   System.getenv("KEY_PASSWORD")
+            }
+        }
+    }
+
     buildTypes {
         debug {
             minifyEnabled false
             debuggable true
         }
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            def ksPath = System.getenv("KEYSTORE_PATH")
+            if (ksPath) signingConfig signingConfigs.release
         }
     }
 

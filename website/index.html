@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#000000">
 <meta name="description" content="حلّال ذكي - حل أسئلة MCQ تلقائياً بالذكاء الاصطناعي">
 <link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
+<link rel="apple-touch-icon" href="icon.svg">
 <title>⚡ حلّال ذكي</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
@@ -98,8 +98,8 @@ html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'Cairo',s
   background:linear-gradient(90deg,transparent,var(--accent),transparent);animation:sl 2s linear infinite}
 @keyframes sl{0%{top:0;opacity:1}95%{top:100%;opacity:1}100%{top:100%;opacity:0}}
 .cr{position:absolute;width:18px;height:18px;border-color:var(--accent);border-style:solid}
-.tl{top:-1px;right:-1px;border-width:3px 0 0 3px}.tr{top:-1px;left:-1px;border-width:3px 3px 0 0}
-.bl{bottom:-1px;right:-1px;border-width:0 0 3px 3px}.br{bottom:-1px;left:-1px;border-width:0 3px 3px 0}
+.tl{top:-1px;left:-1px;border-width:3px 0 0 3px}.tr{top:-1px;right:-1px;border-width:3px 3px 0 0}
+.bl{bottom:-1px;left:-1px;border-width:0 0 3px 3px}.br{bottom:-1px;right:-1px;border-width:0 3px 3px 0}
 .cam-hint{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
   background:rgba(0,0,0,.55);border-radius:10px;padding:8px 16px;
   font-size:13px;color:rgba(255,255,255,.5);pointer-events:none;white-space:nowrap;transition:opacity .4s}
@@ -538,6 +538,7 @@ async function callAPI(content, mode) {
       body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:350,messages:[{role:'user',content}]})
     });
     const data=await res.json();
+    if(!res.ok) throw new Error(data.error?.message || `HTTP ${res.status}`);
     let raw=data.content[0].text.trim().replace(/```json|```/g,'').trim();
     const m=raw.match(/\{[\s\S]*\}/); if(m) raw=m[0];
     const p=JSON.parse(raw);
@@ -606,7 +607,10 @@ function renderOpts(id, opts, ans) {
     const ok=l===ans;
     const d=document.createElement('div');
     d.className='ao '+(ok?'ok':'no');
-    d.innerHTML=`<div class="ao-l">${l}</div><div class="ao-t">${t}</div><div class="ao-ck">${ok?'✓':''}</div>`;
+    const lDiv=document.createElement('div'); lDiv.className='ao-l'; lDiv.textContent=l;
+    const tDiv=document.createElement('div'); tDiv.className='ao-t'; tDiv.textContent=t;
+    const ckDiv=document.createElement('div'); ckDiv.className='ao-ck'; ckDiv.textContent=ok?'✓':'';
+    d.appendChild(lDiv); d.appendChild(tDiv); d.appendChild(ckDiv);
     el.appendChild(d);
   });
 }
